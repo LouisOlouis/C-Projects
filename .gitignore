@@ -2,3 +2,5 @@
 *.dat
 neobin/
 build/
+.vscode/
+run.bat

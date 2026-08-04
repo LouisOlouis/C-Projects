@@ -25,19 +25,10 @@ int main(void) {
         remover_espacos(s);
         DEBUG_LOG("Depois de remover espacos: %s", s);
 
-        interpretar_negativos(s);
+        interpretador_negativos(s);
         DEBUG_LOG("Depois de interpretar negativos: %s", s);
 
-        interpretador_parenteses(s, &erro);
-        DEBUG_LOG("Depois de resolver parenteses: %s", s);
-
-        interpretador_fatorial(s, &erro);
-        DEBUG_LOG("Depois de resolver fatoriais: %s",s);
-
-        interpretador_prioritario(s, &erro);
-        DEBUG_LOG("Depois de resolver prioridades: %s", s);
-
-
+        interpretador_geral(s, &erro);
 
         if (erro.tipo != ERRO_NENHUM) {
             printf("Erro: %s\n", erro.detalhe);

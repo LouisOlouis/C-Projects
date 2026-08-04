@@ -42,9 +42,7 @@ void resolver_expressao(char *s, ExpressaoPrioritaria *expr, Erro *erro);
 void interpretador_prioritario(char *s, Erro *erro);
 
 
+void interpretador_negativos(char *s);
+void interpretador_geral(char *s, Erro *erro);
 
-void interpretar_negativos(char *s);
-#ifdef __cplusplus
-}
-#endif
 #endif

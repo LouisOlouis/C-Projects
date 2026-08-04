@@ -1,8 +1,54 @@
 #include "interpretador.h"
 #include "debug.h"
+#include <stdbool.h>
 
-void interpretar_negativos(char *s) {
-    for(int i = 0; s[i] != '\0'; i++) {
+void interpretador_geral(char *s, Erro *erro) {
+    bool interpretar_parenteses = false;
+    bool interpretar_fatorial = false;
+    bool interpretar_prioritario = false;
+    for (int i = 0; s[i] != '\0'; i++) {
+        switch(s[i]) {
+            case '(':
+                interpretar_parenteses = true;
+                break;
+            case '!':
+                interpretar_fatorial = true;
+                break;
+            default:
+                if(eh_expressao_prioritaria(s[i])){ 
+                    interpretar_prioritario = true;
+                }
+        }
+        if (interpretar_fatorial || interpretar_parenteses || interpretar_prioritario) {
+            break;
+        }
+    }
+    if (interpretar_parenteses) {
+        interpretador_parenteses(s, erro);
+        DEBUG_LOG("Depois de resolver parenteses: %s", s);
+        if (erro != NULL && erro->tipo != ERRO_NENHUM) {
+            return;
+        }
+    }
+    if (interpretar_fatorial) {
+        interpretador_fatorial(s, erro);
+        DEBUG_LOG("Depois de resolver fatoriais: %s",s);
+        if (erro != NULL && erro->tipo != ERRO_NENHUM) {
+            return;
+        }
+    }
+    if (interpretar_prioritario) {
+        interpretador_prioritario(s, erro);
+        DEBUG_LOG("Depois de resolver prioridades: %s", s);
+        if (erro != NULL && erro->tipo != ERRO_NENHUM) {
+            return;
+        }
+    }
+}
+
+
+void interpretador_negativos(char *s) {
+    for (int i = 0; s[i] != '\0'; i++) {
         if (s[i] == '-') {
             if (i == 0 || eh_precedente_negativo(s[i - 1])) {
                 s[i] = negativo;
@@ -34,21 +80,7 @@ void resolver_parenteses(char *s, ExpressaoParenteses *expr, int fechamento, Err
         return;
     }
 
-    interpretador_parenteses(expr->expressao, erro);
-    if (erro != NULL && erro->tipo != ERRO_NENHUM) {
-        return;
-    }
-
-    interpretador_fatorial(expr->expressao, erro);
-    if (erro != NULL && erro->tipo != ERRO_NENHUM) {
-        return;
-    }
-
-    interpretador_prioritario(expr->expressao, erro);
-
-    if (erro != NULL && erro->tipo != ERRO_NENHUM) {
-        return;
-    }
+    interpretador_geral(expr->expressao, erro);
 
     double resultado = operador(expr->expressao, erro);
 
